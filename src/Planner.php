@@ -7,6 +7,10 @@ use RuntimeException;
 class Planner
 {
 	private $loopCounter = 10;
+	private $default = [
+		"1" => -1,
+		"2" => -1,
+	];
 
 	public function generate($countTeams = 3)
 	{
@@ -15,6 +19,7 @@ class Planner
 
 		$result = $this->generateCombinations($countTeams);
 		$result = $this->reorder($result);
+		$result = $this->balance($result);
 		return $result;
 	}
 
@@ -73,6 +78,37 @@ class Planner
 			$counterFix++;
 		}
 
+
+		return $result;
+	}
+
+	private function balance($data)
+	{
+		$result = [];
+		$fs = []; // first/second
+		foreach ($data as $value) {
+			$first = $value[1];
+			$second = $value[2];
+			if (!isset($fs[$first]))
+				$fs[$first] = $this->default;
+			if (!isset($fs[$second]))
+				$fs[$second] = $this->default;
+
+			$firstTeam = $fs[$first];
+			if ($firstTeam[1] > $firstTeam[2]) {
+				$first = $value[2];
+				$second = $value[1];
+			}
+
+			$result[] = [
+				1 => $first,
+				2 => $second,
+			];
+
+			$fs[$first][1] += 1;
+			$fs[$second][2] += 2;
+
+		}
 
 		return $result;
 	}

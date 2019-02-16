@@ -18,11 +18,11 @@ final class PlannerTest extends TestCase
 	{
 		$planner = new \GamePlanner\Planner();
 		$this->assertEquals(0, $planner->generate(3)[0][1]);
-		$this->assertEquals(2, $planner->generate(4)[2][2]);
+		$this->assertEquals(0, $planner->generate(4)[2][2]);
 		$this->assertEquals(0, $planner->generate(5)[5][1]);
 		$this->assertEquals(4, $planner->generate(6)[9][2]);
 		$this->assertEquals(4, $planner->generate(7)[12][2]);
-		$this->assertEquals(0, $planner->generate(8)[18][1]);
+		$this->assertEquals(5, $planner->generate(8)[18][1]);
 		$this->assertEquals(6, $planner->generate(9)[27][2]);
 	}
 
