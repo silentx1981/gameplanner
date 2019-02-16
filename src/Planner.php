@@ -12,7 +12,7 @@ class Planner
 		"2" => -1,
 	];
 
-	public function generate($countTeams = 3)
+	public function generate($countTeams = 3, $switchFirstSecond = false)
 	{
 		if ($countTeams < 3 || $countTeams > 10)
 			throw new RuntimeException("Only Support from 3 to 10 Teams");
@@ -20,6 +20,8 @@ class Planner
 		$result = $this->generateCombinations($countTeams);
 		$result = $this->reorder($result);
 		$result = $this->balance($result);
+		if ($switchFirstSecond)
+			$result = $this->switchFirstSecond($result);
 		return $result;
 	}
 
@@ -113,5 +115,15 @@ class Planner
 		return $result;
 	}
 
+	private function switchFirstSecond($data)
+	{
+		$result = [];
+		foreach ($data as $value)
+			$result[] = [
+				1 => $value[2],
+				2 => $value[1],
+			];
 
+		return $result;
+	}
 }
