@@ -1,0 +1,10 @@
+{
+  "name": "silentx81/gameplanner"
+  , "description": "Library for GamePlanning systems"
+  , "require": {
+     "php": "^7.0"
+  }
+  , "autoload": {
+    "psr-4": { "GamePlanner\\": ["src/"] }
+  }
+}
