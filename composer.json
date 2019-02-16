@@ -1,5 +1,5 @@
 {
-  "name": "raffaelwyss/gameplanner"
+  "name": "silentx81/gameplanner"
   , "description": "Library for GamePlanning systems"
   , "require": {
      "php": "^7.0"
