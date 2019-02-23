@@ -6,7 +6,6 @@ use RuntimeException;
 
 class Planner
 {
-	private $loopCounter = 10;
 	private $default = [
 		"1" => -1,
 		"2" => -1,
@@ -18,8 +17,9 @@ class Planner
 			throw new RuntimeException("Only Support from 3 to 10 Teams");
 
 		$result = $this->generateCombinations($countTeams);
-		$result = $this->reorder($result);
+		$result = $this->reorder($result, $countTeams);
 		$result = $this->balance($result);
+
 		if ($switchFirstSecond)
 			$result = $this->switchFirstSecond($result);
 		return $result;
@@ -46,40 +46,38 @@ class Planner
 		return $result;
 	}
 
-	private function reorder($data)
+	private function reorder($data, $countTeams)
 	{
-		$counter = 0;
-		$counterFix = 0;
+
+		$teamsEmpty = [];
+		for ($i = 0; $i < $countTeams; $i++)
+			$teamsEmpty[$i] = 0;
+
 		$result = [];
+		$countMatches = count($data);
+		for ($i = 0; $i < $countMatches; $i++) {
+			$teams = $teamsEmpty;
 
-		while($counter < $this->loopCounter) {
+			// Count pause for every team
+			foreach ($result as $value)
+				foreach ($teams as $tkey => $team)
+					if ($tkey === $value[1] || $tkey === $value[2])
+						$teams[$tkey] = 0;
+					else
+						$teams[$tkey]++;
 
-			$values = [];
-			$countData = count($data);
-			for ($i = 0; $i < $countData; $i++) {
-				$value = $result[count($result) - 1] ?? null;
-				if ($value === null) {
-					$result[] = $data[$i];
-					$counterFix = 0;
-					continue;
-				} else if ($value[1] !== $data[$i][1] && $value[2] !== $data[$i][1] && $value[1] !== $data[$i][2] && $value[2] !== $data[$i][2]) {
-					$result[] = $data[$i];
-					$counterFix = 0;
-					continue;
-				} else if ($counterFix > 3) {
-					$result[] = $data[$i];
-					$counterFix = 0;
-					continue;
-				}
-				$values[] = $data[$i];
-			}
+			// Rate every game
+			$rate = [];
+			foreach ($data as $key => $value)
+				$rate[$key] = $teams[$value[1]] + $teams[$value[2]];
 
-			$data = $values;
+			// Get the match with the most pause
+			$maxPos = array_keys($rate, max($rate))[0];
+			$result[] = $data[$maxPos];
+			unset($data[$maxPos]);
+			$data = array_values($data);
 
-			$counter++;
-			$counterFix++;
 		}
-
 
 		return $result;
 	}
