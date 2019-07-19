@@ -16,9 +16,15 @@ class Planner
 		if ($countTeams < 3 || $countTeams > 10)
 			throw new RuntimeException("Only Support from 3 to 10 Teams");
 
-		$result = $this->generateCombinations($countTeams);
-		$result = $this->reorder($result, $countTeams);
-		$result = $this->balance($result);
+		$class = "GamePlanner\\Mapping\\Map$countTeams";
+		if (class_exists($class)) {
+			$instance = new $class();
+			$result = $instance->getMap();
+		} else {
+			$result = $this->generateCombinations($countTeams);
+			$result = $this->reorder($result, $countTeams);
+			$result = $this->balance($result);
+		}
 
 		if ($switchFirstSecond)
 			$result = $this->switchFirstSecond($result);
@@ -48,7 +54,6 @@ class Planner
 
 	private function reorder($data, $countTeams)
 	{
-
 		$teamsEmpty = [];
 		for ($i = 0; $i < $countTeams; $i++)
 			$teamsEmpty[$i] = 0;
