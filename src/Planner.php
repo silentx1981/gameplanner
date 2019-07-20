@@ -28,6 +28,7 @@ class Planner
 
 		if ($switchFirstSecond)
 			$result = $this->switchFirstSecond($result);
+		$result = array_reverse($result);
 		return $result;
 	}
 
